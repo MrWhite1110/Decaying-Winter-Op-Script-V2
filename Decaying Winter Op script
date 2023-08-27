@@ -1,7 +1,7 @@
 local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
 
 local Window = Rayfield:CreateWindow({
-	Name = "DECAYING WINTER SCRIPT",
+	Name = "DECAYING WINTER OP SCRIPT [V2]",
 	LoadingTitle = "DECAYING WINTER OP SCRIPT [v2]",
 	LoadingSubtitle = "made by ry",
 	ConfigurationSaving = {
