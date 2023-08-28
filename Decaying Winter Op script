@@ -162,7 +162,7 @@ UserInputService.InputBegan:Connect(function(input, Typing)
     if Typing then
         return
     end
-	if input.KeyCode == Enum.KeyCode.M then
+	if input.KeyCode == Enum.KeyCode.V then
 	    for i=1, 1 do
             workspace.ServerStuff.dropAmmo:FireServer("rations", "MRE")
             workspace.ServerStuff.dropAmmo:FireServer("rations", "Bottle")
