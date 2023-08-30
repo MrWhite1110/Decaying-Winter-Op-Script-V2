@@ -1,0 +1,109 @@
+--[[made by ry
+load this in a round to pursue
+
+]]--
+local rep = game:GetService("ReplicatedStorage")
+local animfolder = rep.animationSets.TPanimSets
+local plr = game.Players.LocalPlayer
+local char = plr.Character
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local posing = false
+
+--anims
+local maliceanim = char:WaitForChild("Humanoid"):LoadAnimation(animfolder.special.malice_combat)
+local restanim = char:WaitForChild("Humanoid"):LoadAnimation(animfolder.special.malice_rest)
+restanim:AdjustSpeed(0.75)
+animfolder["2H"].block.AnimationId = animfolder["2JR"].block.AnimationId
+animfolder["2H"].swing2.AnimationId = animfolder["2JR"].swing2.AnimationId
+animfolder["2H"].swing.AnimationId = animfolder["2JR"].swing.AnimationId
+animfolder["2H"].charge.AnimationId = animfolder["2JR"].charge.AnimationId
+animfolder["2H"].equip.AnimationId = animfolder.special.malice_combat.AnimationId
+animfolder["2H"].grapple.AnimationId = animfolder["2JR"].grapple.AnimationId
+--func
+
+function spawn(Item)
+local plrorigpos = char:WaitForChild("HumanoidRootPart").CFrame
+   local workbench = workspace.Interactables:FindFirstChild("Workbench")
+ local item = ""..Item..""
+ game.Players.LocalPlayer.Character:PivotTo(workbench:GetPivot() + Vector3.new(0, 5, 0))
+ local args = {
+     [1] = workspace.Interactables.Workbench,
+     [2] = "workbenchblueprint"..item.."",
+ }
+ 
+ game:GetService("ReplicatedStorage").Interactables.interaction:FireServer(unpack(args))
+  wait(0.01)
+  char:WaitForChild("HumanoidRootPart").CFrame = plrorigpos
+ wait(1.7)
+ local args = {
+     [1] = workspace.Interactables.Workbench,
+     [2] = "workbench",
+ }
+ 
+ game:GetService("ReplicatedStorage").Interactables.interaction:FireServer(unpack(args))
+ wait(4.8)
+ game.Players.LocalPlayer.Character:PivotTo(workbench:GetPivot() + Vector3.new(0, 5, 0))
+ wait(3)
+   char:WaitForChild("HumanoidRootPart").CFrame = plrorigpos
+end
+
+--scripts
+if workspace:FindFirstChild("holdout_fight2") then -- if you want this shit to work just remove the 2 lines at the start of line 52 
+print("music alr playing bruv!!")
+else
+workspace.ServerStuff.playAudio:FireServer({"songs"}, "holdout_fight2", char.PrimaryPart)
+end
+spawn("DFAxe")
+maliceanim:Play()
+workspace.ServerStuff.playAudio:FireServer({"events"}, "shiparrive2", char.PrimaryPart)
+workspace.ServerStuff.playAudio:FireServer({"events"}, "shiparrive", char.PrimaryPart)
+
+
+--kbinds
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+    if gameProcessedEvent == true then
+        return
+    end
+        if input.KeyCode == Enum.KeyCode.G then
+
+           
+            local direction = char.PrimaryPart.CFrame.Position + Vector3.new(0, .5, 0)
+            local bodyPosition = Instance.new("BodyPosition")
+            bodyPosition.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+            bodyPosition.P = 27500
+
+            if UserInputService:IsKeyDown(Enum.KeyCode.W) == true then direction -= char.PrimaryPart.CFrame.ZVector * 18 end
+            if UserInputService:IsKeyDown(Enum.KeyCode.A) == true then direction -= char.PrimaryPart.CFrame.XVector * 18 end
+            if UserInputService:IsKeyDown(Enum.KeyCode.S) == true then direction += char.PrimaryPart.CFrame.ZVector * 18 end
+            if UserInputService:IsKeyDown(Enum.KeyCode.D) == true then direction += char.PrimaryPart.CFrame.XVector * 18 end
+
+            if UserInputService:IsKeyDown(Enum.KeyCode.W) == false and UserInputService:IsKeyDown(Enum.KeyCode.A) == false and UserInputService:IsKeyDown(Enum.KeyCode.S) == false and UserInputService:IsKeyDown(Enum.KeyCode.D) == false then direction += char.PrimaryPart.CFrame.ZVector * 18 end
+
+            workspace.ServerStuff.playAudio:FireServer({"soldiers"}, "dash", char.PrimaryPart)
+            bodyPosition.Position = direction
+            bodyPosition.Parent = char.PrimaryPart
+char.Humanoid:LoadAnimation(animfolder.special.dash):Play()
+
+            task.wait(.2)
+            bodyPosition:Destroy()
+        end
+       
+        if input.KeyCode == Enum.KeyCode.V then
+            if posing == false then 
+                posing = true
+                restanim:Play()
+char.HumanoidRootPart.Anchored = true
+            else
+                posing = false
+                restanim:Stop()
+char.HumanoidRootPart.Anchored = false
+end
+        end
+  
+end)
+
+char:WaitForChild("Humanoid").Died:Connect(function()
+workspace.ServerStuff.playAudio:FireServer({"soldiers"}, "defeat", char.PrimaryPart)
+wait(0.5)
+end)
